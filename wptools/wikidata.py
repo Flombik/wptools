@@ -375,6 +375,8 @@ def reduce_claims(query_claims):
                     val = value.get('text')
                 elif value.get('time'):
                     val = value.get('time')
+                elif value.get('amount'):
+                    val = value.get('amount')
                 else:
                     val = value
             except AttributeError:
@@ -383,6 +385,10 @@ def reduce_claims(query_claims):
             if not val or not [x for x in val if x]:
                 raise ValueError("%s %s" % (claim, ent))
 
-            claims[claim].append(val)
+            if ent.get('rank') == 'preferred':
+                claims[claim] = [val]
+                break
+            else:
+                claims[claim].append(val)
 
     return dict(claims)
